@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explication du Script de Trading StoCrypto.mq5</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+        }
+        h2 {
+            color: #34495e;
+            margin-top: 20px;
+        }
+        p {
+            margin: 10px 0;
+        }
+        ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        .highlight {
+            background-color: #e8f0fe;
+            padding: 10px;
+            border-left: 4px solid #4285f4;
+            margin: 10px 0;
+        }
+        .warning {
+            background-color: #fef7e8;
+            padding: 10px;
+            border-left: 4px solid #f4b400;
+            margin: 10px 0;
+        }
+        .section {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Explication du Script de Trading StoCrypto.mq5</h1>
+        <p>Le script <strong>StoCrypto.mq5</strong> est un <strong>robot de trading</strong> (Expert Advisor) conçu pour la plateforme <strong>MetaTrader 5</strong>. Il automatise les décisions d'achat et de vente sur le marché forex (ou potentiellement les cryptomonnaies). Voici une explication claire pour comprendre ce qu'il fait, sans jargon compliqué.</p>
+
+        <div class="section">
+            <h2>Qu'est-ce que fait ce script ?</h2>
+            <p>Ce robot est comme un assistant qui surveille le marché forex et prend des décisions pour vous. Il :</p>
+            <ul>
+                <li><strong>Analyse les tendances</strong> du marché avec des outils mathématiques (indicateurs techniques).</li>
+                <li><strong>Ouvre et ferme des trades</strong> (achats ou ventes) pour essayer de gagner de l'argent.</li>
+                <li><strong>Gère les risques</strong> en limitant le nombre de trades et en équilibrant les pertes.</li>
+                <li><strong>Affiche des informations</strong> sur le graphique, comme vos profits/pertes et des boutons pour intervenir manuellement.</li>
+                <li><strong>Travaille par bougie</strong> : il vérifie les opportunités à chaque nouvelle barre de prix (bougie).</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Comment il décide quoi faire ?</h2>
+            <p>Le robot utilise des <strong>indicateurs techniques</strong> pour comprendre si le prix va monter (tendance haussière) ou baisser (tendance baissière). Voici les principaux :</p>
+            <ul>
+                <li><strong>Moyennes Mobiles (DEMA)</strong> : Suit la tendance des prix sur différentes périodes (21, 50, 75, jusqu'à 1000). Si le prix passe au-dessus d'une moyenne courte (comme 21), cela peut signaler un achat.</li>
+                <li><strong>Stochastic Oscillator</strong> : Vérifie si le marché est "suracheté" (prêt à baisser, au-dessus de 70) ou "survendu" (prêt à monter, en-dessous de 30).</li>
+                <li><strong>MACD</strong> : Compare deux moyennes pour repérer les changements de tendance. Une ligne MACD au-dessus de sa ligne de signal = achat ; en-dessous = vente.</li>
+                <li><strong>ATR (Volatilité)</strong> : Mesure l'ampleur des mouvements de prix. Plus l'ATR est élevé, plus le marché bouge, ce qui aide à confirmer les trades.</li>
+                <li><strong>Momentum</strong> : Vérifie si le prix accélère ou ralentit sur 600 périodes pour confirmer la force de la tendance.</li>
+                <li><strong>RSI</strong> : Analyse la vitesse des mouvements de prix pour confirmer si la tendance monte ou descend.</li>
+            </ul>
+            <div class="highlight">
+                <p><strong>Exemple</strong> : Si le prix dépasse la moyenne mobile de 21 périodes, que le MACD devient haussier et que le marché n'est pas suracheté, le robot peut ouvrir un achat.</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Actions du robot</h2>
+            <ul>
+                <li><strong>Achat/Vente</strong> : Ouvre des trades d'achat (buy) ou de vente (sell) avec une taille fixe (par défaut 0.01 lot, ajustable).</li>
+                <li><strong>Hedging</strong> : Si les pertes d'un côté (achat ou vente) dépassent 25 % des profits totaux, il ouvre un trade opposé pour équilibrer.</li>
+                <li><strong>Fermeture des trades</strong> : Ferme les trades quand ils atteignent un profit minimum (par défaut 2 unités par 0.01 lot) ou si la tendance s'inverse.</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Gestion des risques</h2>
+            <ul>
+                <li><strong>Limite de trades</strong> : Maximum 5 trades ouverts en même temps (ajustable).</li>
+                <li><strong>Profit minimum</strong> : Ferme les trades quand le profit atteint un seuil défini.</li>
+                <li><strong>Hedging</strong> : Équilibre les pertes en ouvrant des trades opposés si nécessaire.</li>
+                <li><strong>Volatilité</strong> : N'ouvre des trades que si le marché est assez actif (selon l'ATR).</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Interface utilisateur</h2>
+            <p>Le robot ajoute des éléments visuels sur le graphique :</p>
+            <ul>
+                <li><strong>Boutons</strong> :
+                    <ul>
+                        <li><strong>CloseAll</strong> : Ferme tous les trades.</li>
+                        <li><strong>CloseAllBuy/CloseAllSell</strong> : Ferme les trades d'achat ou de vente.</li>
+                        <li><strong>CloseOnlyBuyProfitable/CloseOnlySellProfitable</strong> : Ferme les trades rentables uniquement.</li>
+                        <li><strong>BUY/SELL</strong> : Ouvre un achat et une vente en même temps (hedging).</li>
+                    </ul>
+                </li>
+                <li><strong>Affichage</strong> :
+                    <ul>
+                        <li>Boîte en bas du graphique montrant les profits/pertes (vert pour profit, rouge pour perte).</li>
+                        <li>Lignes verticales sur le graphique lors de l'ouverture de trades (rouge pour vente, vert olive pour achat).</li>
+                        <li>Flèches indiquant la tendance (haut/bas) selon les moyennes mobiles.</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Paramètres personnalisables</h2>
+            <p>Vous pouvez ajuster ces paramètres pour adapter le robot :</p>
+            <ul>
+                <li><strong>cantrade</strong> : Active/désactive le trading automatique (par défaut : désactivé).</li>
+                <li><strong>LotSize</strong> : Taille des trades (par défaut : 0.01).</li>
+                <li><strong>DreamMinimumProfit</strong> : Profit minimum pour fermer un trade (par défaut : 2).</li>
+                <li><strong>NbMaxTradesAtSameTime</strong> : Maximum de trades ouverts (par défaut : 5).</li>
+                <li><strong>RatioLostBuySellBeforeHedge</strong> : Seuil de perte pour activer le hedging (par défaut : 25 %).</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Exemple simple</h2>
+            <p>Imaginons que vous tradez EUR/USD :</p>
+            <ul>
+                <li>Une nouvelle bougie apparaît. Le prix passe au-dessus de la moyenne mobile de 21 périodes, le MACD devient haussier, et le Stochastic n'indique pas de surachat.</li>
+                <li>Le robot ouvre un achat de 0.01 lot.</li>
+                <li>Si le prix redescend sous la moyenne mobile et que les pertes dépassent 25 %, il ouvre une vente pour équilibrer.</li>
+                <li>Si le profit atteint 2 unités, il ferme les trades rentables.</li>
+                <li>Vous pouvez cliquer sur "CloseAll" pour tout arrêter manuellement.</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Comment l'utiliser</h2>
+            <ul>
+                <li><strong>Plateforme</strong> : Chargez le script dans MetaTrader 5 et attachez-le à un graphique forex.</li>
+                <li><strong>Testez d'abord</strong> : Utilisez un compte démo pour voir comment il fonctionne avant d'utiliser de l'argent réel.</li>
+                <li><strong>Ajustez les paramètres</strong> : Modifiez LotSize, DreamMinimumProfit, etc., selon votre tolérance au risque.</li>
+                <li><strong>Surveillez</strong> : Utilisez les boutons pour intervenir si nécessaire.</li>
+            </ul>
+        </div>
+
+        <div class="warning">
+            <h2>Attention</h2>
+            <ul>
+                <li><strong>Risque</strong> : Le trading forex est risqué. Vous pouvez perdre de l'argent si le marché va contre vous.</li>
+                <li><strong>Pas de stop-loss strict</strong> : Le robot ne définit pas toujours des stop-loss clairs, ce qui peut entraîner des pertes importantes.</li>
+                <li><strong>Code commenté</strong> : Certaines stratégies sont désactivées (commentées). Seule une stratégie simple basée sur MACD et DEMA est active.</li>
+                <li><strong>Testez bien</strong> : Le succès dépend du marché et des paramètres. Testez-le thoroughly.</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Pour qui est ce script ?</h2>
+            <p>Ce robot est idéal pour ceux qui veulent automatiser le trading forex tout en gardant un contrôle manuel via les boutons. C'est comme un cuisinier qui suit une recette (indicateurs) pour préparer un plat (trades), mais vous pouvez ajuster les ingrédients (paramètres) ou intervenir à tout moment.</p>
+            <p>Si vous voulez en savoir plus sur un indicateur ou un paramètre spécifique, demandez !</p>
+        </div>
+    </div>
+</body>
+</html>
