@@ -1,0 +1,2 @@
+# TradingStrategy
+Script de trading
